@@ -14,6 +14,10 @@ void show_menu()
 	printf("3 - Exit\n");
 }
 
+void handle_user()
+{
+
+}
 
 int main()
 {
@@ -26,6 +30,7 @@ int main()
 		option = getchar();
 		getchar();
 		printf("User entered: %c\n",option);
+		handle_user();
 	}
 
 	return 0;
