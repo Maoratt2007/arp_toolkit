@@ -1,5 +1,13 @@
+#pragma once 
 #include <stdio.h>
-#include <stdint.h>
+#include <stdint.h>// uint8_t, uint16_t
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h> //read close write
+#include <sys/socket.h> //socket, bind, liste, accept
+#include <arpa/inet.h>//htons
+#include <linux/if_ether.h>//ETH_P_ARP- ETHER TYPE ARP IN LINUX
+
 
 #define MAC_LEN (6)
 #define IP_LEN (4)
@@ -20,13 +28,13 @@ typedef struct arp_addrs_s {
 	uint8_t source_mac[6];
 	uint8_t source_ip[4]; 
 	uint8_t target_mac[6];
-	uint8_t target_ip[4] 
+	uint8_t target_ip[4];
 
 } arp_addrs_t;
 
 void usage();
-void cleanup();
+void cleanup(int sock);
 arp_addrs_t init_addrs();
-void open_socket();
+int open_socket();
 void set_ether_headers(arp_addrs_t arp_addrs, uint8_t *reply_arp);
 void control_attack();

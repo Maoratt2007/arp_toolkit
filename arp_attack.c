@@ -7,10 +7,10 @@ void usage()
   exit(1);
 }
 
-void cleanup()
+void cleanup(int sock)
 {
-	close(sock)
-	exit(0)
+	close(sock);
+	exit(0);
 }
 
 arp_addrs_t init_addrs()
@@ -24,14 +24,15 @@ arp_addrs_t init_addrs()
 
 }
 
-void open_socket()
+int open_socket()
 {
   //Creates a raw Layer-2 socket for sending/receiving ARP frames and returns a file descriptor.
-    sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
+    int sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
     if (sock < 0) {
         perror("socket");
         exit(1);
     }
+    return sock;
 }
 
 void set_ether_headers(arp_addrs_t arp_addrs, uint8_t *reply_arp)
