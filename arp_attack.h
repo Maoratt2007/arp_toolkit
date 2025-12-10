@@ -39,6 +39,8 @@ typedef struct arp_addrs_s {
 
 } arp_addrs_t;
 
+void arp_attack_banner();
+void show_arp_attack_menu();
 void usage();
 void cleanup(int sock);
 arp_addrs_t init_addrs();
@@ -47,3 +49,5 @@ void set_ether_headers(arp_addrs_t arp_addrs, uint8_t *reply_arp);
 void set_arp_headers( arp_header_t *arp, arp_addrs_t arp_addrs );
 void set_socket(struct sockaddr_ll * addr, arp_addrs_t arp_addrs);
 void control_attack();
+void arp_attack_handle_user(char option);
+void arp_attack_menu_controller();

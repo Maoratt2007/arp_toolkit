@@ -1,9 +1,23 @@
 #include "arp_attack.h"
 
+void arp_attack_banner()
+{
+  printf("------------------------------------\n");
+  printf("  WELCOME TO THE ARP OFFENSIVE LAB  \n");
+  printf("------------------------------------\n");
+}
+
+void show_arp_attack_menu()
+{
+  printf("1 - Set data -> source_mac, source_ip, target_mac, target_ip\n");
+  printf("2 - Start attack\n");
+  printf("3 - Exit\n");
+}
+
 void usage()
 {
-  puts("usage:\t./arp-poison <interface> <gateway ip> <mac addr>");
-  puts("ex:\t./arp-poison eth0 10.1.1.1 aa:bb:cc:dd:ee:ff");
+  puts("usage:\t./arp-poison <source_mac> <source_ip> <target_mac> <target_ip>");
+  puts("ex:\t./arp-poison 10.1.1.1 aa:bb:cc:dd:ee:ff 10.1.1.2 ff:ee:dd:cc:bb:aa");
   exit(1);
 }
 
@@ -94,6 +108,33 @@ void control_attack()
   printf("ARP Reply sent!\n");
 
   cleanup(sock);
+
+}
+
+void arp_attack_handle_user(char option)
+{
+  int option_int= atoi(option);
+  switch(option_int){
+  case 2:
+    control_attack();
+    break;
+  }
+
+}
+
+void arp_attack_menu_controller()
+{
+  char option = 0;
+  banner();
+
+  while(option != '3')
+  {
+    show_menu();
+    option = getchar();
+    getchar();
+    printf("User entered: %c\n",option);
+    handle_user(char option);
+  }
 
 }
 
