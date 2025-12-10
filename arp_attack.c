@@ -16,10 +16,10 @@ void cleanup(int sock)
 arp_addrs_t init_addrs()
 {
   arp_addrs_t a= {
-    .source_mac={0x08, 0x00, 0x27, 0xaa, 0xbb, 0xcc},
-    .source_ip={192, 168, 1, 1},
-    .target_mac={0xde, 0xad, 0xbe, 0xef, 0x11, 0x22},
-    .target_ip={192, 168, 1, 1}
+    .source_mac={0xAB, 0xCD, 0xEF, 0xEF, 0xCD, 0xAB},
+    .source_ip={192, 168, 0, 160},
+    .target_mac={0x00,0x0c,0x29,0x51,0x40,0xba},
+    .target_ip={192, 168, 170, 128}
   };
   return a;
 
@@ -64,7 +64,7 @@ void set_arp_headers( arp_header_t *arp,arp_addrs_t arp_addrs )
 void set_socket(struct sockaddr_ll * addr, arp_addrs_t arp_addrs)
 {
     addr->sll_family = AF_PACKET;
-    addr->sll_ifindex = if_nametoindex("eth0"); 
+    addr->sll_ifindex = if_nametoindex("enp2s0"); 
     addr->sll_halen = ETH_ALEN;
     memcpy(addr->sll_addr, arp_addrs.target_mac, 6);
 }
@@ -95,4 +95,9 @@ void control_attack()
 
   cleanup(sock);
 
+}
+
+int main(){
+  control_attack();
+  return 0;
 }
