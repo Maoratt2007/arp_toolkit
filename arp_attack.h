@@ -19,7 +19,7 @@
 #define ARP_PLEN (4)
 #define ARP_REPLY (2)
 #define ARP_PACKET_SIZE (42)
-#define PACKET_SEND_COUNT (200000)
+#define PACKET_SEND_COUNT (500000)
 
 typedef struct arp_header_s {
 	uint16_t htype;

@@ -30,10 +30,10 @@ void cleanup(int sock)
 arp_addrs_t init_addrs()
 {
   arp_addrs_t a= {
-    .source_mac={0xAB, 0xCD, 0xEF, 0xEF, 0xCD, 0xAB},
+    .source_mac={0xDE,0xAD,0xBE,0xEF,0xFE,0xED},
     .source_ip={192, 168, 0, 160},
     .target_mac={0x00,0x0c,0x29,0x51,0x40,0xba},
-    .target_ip={192, 168, 170, 128}
+    .target_ip={192, 168, 0, 172}
   };
   return a;
 
@@ -92,7 +92,7 @@ void send_arp_packets(int sock,uint8_t* reply_arp,struct sockaddr_ll addr, int c
       perror("sendto");
       exit(1);
     }
-    usleep(3);
+    usleep(50);
     count--;
   }
 
